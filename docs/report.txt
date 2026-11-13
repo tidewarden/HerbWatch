@@ -1,0 +1,67 @@
+Herb Watch - US PvP Alliance - 2026-11-13 16:09
+===============================================
+Prices observed 2026-11-13 14:59 (BootyBayBroker)
+Item                 Phase           Price    7d avg vs avg avg 24h  prior Listed  Notes
+Dreamfoil            rising        27s 46c    26s 1c    +6%    -20%      -     82  
+Plaguebloom          falling       40s 32c   52s 14c   -23%     -3%      -     71  
+Blindweed            rising        14s 40c   11s 26c   +28%     +8%      -      5  
+Gromsblood           falling        25s 0c   30s 15c   -17%     -9%      -     37  
+Mountain Silversage  falling       10s 74c   20s 42c   -47%    -18%      -     64  
+Sungrass             falling       19s 35c   16s 33c   +18%    +18%      -    118  
+Golden Sansam        falling        8s 38c   12s 81c   -35%    -11%      -    105  
+Ghost Mushroom       rising        66s 98c   46s 23c   +45%    +18%      -     59  
+Icecap               falling       21s 14c   28s 49c   -26%    -10%      -     83  
+Mithril Ore          rising         9s 49c    8s 91c    +6%     +0%      -    243  
+Thorium Ore          falling       16s 57c   15s 70c    +6%     -3%      -     31  
+Thorium Bar          falling       18s 40c   19s 17c    -4%     +1%      -     80  
+Arcane Crystal       falling       12g 20s    9g 16s   +33%    +14%      -     33  
+Arcanite Bar         falling        37g 0s   38g 35s    -4%     +2%      -     13  
+Essence of Earth     falling        4g 73s    7g 57s   -38%    -14%      -     15  
+Essence of Fire      falling        2g 78s    2g 22s   +25%    +12%      -     46  
+Essence of Air       falling        3g 99s   12g 28s   -67%    -18%      -      6  
+Essence of Water     falling        3g 45s    4g 94s   -30%    -13%      -    103  
+Living Essence       falling       55s 31c   43s 62c   +27%    +23%      -    162  
+Elemental Fire       falling       32s 28c   40s 42c   -20%     -7%      -    108  
+Elemental Earth      falling       23s 23c   28s 65c   -19%     -4%      -    183  
+Heart of Fire        falling       14s 95c   17s 78c   -16%    +11%      -     93  
+Core of Earth        falling        5s 95c    6s 98c   -15%     +0%      -     94  
+Large Brilliant Shard falling        2g 75s    4g 10s   -33%    -14%      -     29  
+Illusion Dust        falling       69s 98c   64s 96c    +8%    +20%      -     66  
+Greater Eternal Essence falling        1g 66s    2g 11s   -21%     -9%      -     17  
+Righteous Orb        rising        13g 85s   17g 83s   -22%    -15%      -     29  
+Golden Pearl         falling        1g 99s    2g 69s   -26%    -12%      -     91  
+Devilsaur Leather    falling       64s 59c     1g 4s   -38%    -16%      -     33  
+Rugged Leather       falling       14s 53c   13s 26c   +10%    +16%      -    251  
+Runecloth            falling        7s 28c   10s 44c   -30%    -12%      -    113  
+Cured Thick Hide     rising        18s 88c   15s 78c   +20%       -      -     40  
+Powerful Mojo        stalled        2g 45s    1g 65s   +48%       -      -     17  no new high, need 24h of averages
+Enchanted Leather    rising         1g 40s     1g 6s   +31%       -      -      1  
+Blood of the Mountain falling        3g 66s    6g 74s   -46%       -      -     11  
+Spellpower Goggles Xtreme falling        1g 80s    2g 68s   -33%       -      -     19  
+Larval Acid          falling        87s 2c    1g 50s   -42%       -      -     49  
+Guardian Stone       falling         9g 0s    8g 61s    +5%       -      -     18  
+Red Dragonscale      falling         1g 4s    1g 47s   -29%       -      -     12  
+Blue Dragonscale     rising          2g 0s    1g 30s   +53%       -      -      2  
+Malleable Essence of Nature ERROR       item 274030 not in the BootyBayBroker data for US/CAMWOWUS2Realm2PvP-Alliance
+Legionite Bar        falling       67g 67s         -      -       -      -      5  
+Heavy Thorium Bar    falling        5g 49s         -      -       -      -      2  
+Nexus Crystal        ERROR       item 20725 not in the BootyBayBroker data for US/CAMWOWUS2Realm2PvP-Alliance
+Thorium Tube         falling       85s 94c         -      -       -      -     15  
+Flask of Supreme Power flat          100g 0s         -      -       -      -      1  
+Delicate Arcanite Converter rising        74g 74s         -      -       -      -      1  
+Bolt of Runecloth    falling       37s 98c   40s 31c    -6%       -      -     55  
+Fel Leather          falling       20s 34c   40s 21c   -49%       -      -    137  
+Cured Rugged Hide    falling       13g 97s   14g 89s    -6%       -      -     24  
+Ghost Dye            falling       25s 43c   37s 57c   -32%       -      -     12  
+Pristine Scale       falling        1g 93s    1g 65s   +17%       -      -     52  
+Felcloth             falling       33s 31c   40s 19c   -17%       -      -     83  
+Mooncloth            rising        27g 99s   21g 32s   +31%       -      -      1  
+Refined Deeprock Salt falling       20g 40s         -      -       -      -     15  
+Black Dragonscale    rising        10g 15s         -      -       -      -     29  
+Demonsage            falling       95s 54c         -      -       -      -     28  
+Marefoil             flat           1g 68s         -      -       -      -     28  
+Death Lotus          falling       17g 35s         -      -       -      -     18  
+
+vs avg = price against the 7-day average. avg 24h / prior = how much the 7-day average moved in the last 24h and the 24h before that.
+
+No new alerts.
