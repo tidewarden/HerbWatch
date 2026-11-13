@@ -1,5 +1,5 @@
-Market Analysis Report - US PvP Alliance - 2026-11-13 16:09
-===============================================
+Market Analysis Report - US PvP Alliance - 2026-11-13 16:52
+===========================================================
 Prices observed 2026-11-13 14:59 (BootyBayBroker)
 Item                 Phase           Price    7d avg vs avg avg 24h  prior Listed  Notes
 Dreamfoil            rising        27s 46c    26s 1c    +6%    -20%      -     82  
