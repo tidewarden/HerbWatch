@@ -1,0 +1,218 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Warrior Dungeon Overlap</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap">
+<style>
+/* Layout: one ranked column. Each dungeon is a ledger entry: name and tallies on a head line, a to-scale split bar, then its loot rows. */
+:root {
+  --bg: #f3f1ee;
+  --surface: #fbfaf8;
+  --line: #d9d4cc;
+  --fg: #23201c;
+  --muted: #6b645b;
+  --accent: #8a5a22;        /* warrior tan, darkened for light ground */
+  --fury: #b8432a;
+  --prot: #2f6291;
+  --both: #7a5a9a;
+  --fury-soft: #f4dcd5;
+  --prot-soft: #d8e5f0;
+  --both-soft: #e6dcee;
+  --q-uncommon: #2e7d1e;
+  --q-rare: #1f5fb8;
+  --q-epic: #8a2fc9;
+  --q-common: #23201c;
+  --display: "Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "Barlow", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17181c; --surface: #1f2126; --line: #34363d; --fg: #e9e6e0; --muted: #9c978e;
+    --accent: #c79c6e; --fury: #e8755a; --prot: #6ea8dc; --both: #b594d6;
+    --fury-soft: #43241d; --prot-soft: #1d3348; --both-soft: #36294a;
+    --q-uncommon: #4fd43a; --q-rare: #4d9bf5; --q-epic: #bf6df5; --q-common: #e9e6e0;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17181c; --surface: #1f2126; --line: #34363d; --fg: #e9e6e0; --muted: #9c978e;
+  --accent: #c79c6e; --fury: #e8755a; --prot: #6ea8dc; --both: #b594d6;
+  --fury-soft: #43241d; --prot-soft: #1d3348; --both-soft: #36294a;
+  --q-uncommon: #4fd43a; --q-rare: #4d9bf5; --q-epic: #bf6df5; --q-common: #e9e6e0;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg);
+  font-family: var(--body); font-size: 16px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 28px 56px;
+}
+.wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 24px; }
+h1 { font-family: var(--display); font-weight: 700; font-size: 2.4rem; line-height: 1.05; margin: 0; text-wrap: balance; letter-spacing: .01em; }
+.lede { margin: 8px 0 0; color: var(--muted); max-width: 65ch; }
+.lede a { color: var(--accent); }
+.controls { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: flex-end; }
+.ctl { display: flex; flex-direction: column; gap: 6px; }
+.ctl > span { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; background: var(--surface); }
+.seg button {
+  font: 600 1rem var(--display); letter-spacing: .03em; color: var(--muted);
+  background: none; border: 0; border-right: 1px solid var(--line); padding: 7px 14px; cursor: pointer;
+}
+.seg button:last-child { border-right: 0; }
+.seg button:hover { color: var(--fg); }
+.seg button[aria-pressed="true"] { background: var(--accent); color: var(--bg); }
+.seg button:focus-visible { outline: 2px solid var(--fg); outline-offset: -2px; }
+.pick { border-top: 2px solid var(--accent); padding-top: 12px; margin: 0; max-width: 70ch; }
+.pick b { font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: .85rem; color: var(--muted); }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; }
+.list { display: flex; flex-direction: column; gap: 28px; }
+.dg { display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.dg-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; }
+.rank { font: 600 1.1rem var(--display); color: var(--muted); font-variant-numeric: tabular-nums; min-width: 1.6em; }
+.dg h2 { font: 700 1.6rem/1.1 var(--display); margin: 0; letter-spacing: .01em; }
+.tag { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 1px 5px; font-weight: 600; }
+.tally { margin-left: auto; display: flex; flex-wrap: wrap; gap: 4px 14px; font-variant-numeric: tabular-nums; font-size: .95rem; color: var(--muted); }
+.tally strong { font: 700 1.25rem var(--display); color: var(--fg); margin-right: 3px; }
+.tally .t-fury strong { color: var(--fury); }
+.tally .t-prot strong { color: var(--prot); }
+.tally .t-both strong { color: var(--both); }
+.bar { display: flex; height: 8px; gap: 2px; }
+.bar span { display: block; height: 100%; border-radius: 2px; }
+.wings { font-size: .85rem; color: var(--muted); margin: 0; }
+.tbl { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+table { border-collapse: collapse; width: 100%; font-size: .93rem; }
+th { text-align: left; font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 600; padding: 8px 12px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 6px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.item { font-weight: 600; min-width: 11em; }
+td.slot, td.for { white-space: nowrap; }
+td.from { color: var(--muted); min-width: 10em; }
+.q-uncommon { color: var(--q-uncommon); } .q-rare { color: var(--q-rare); } .q-epic { color: var(--q-epic); } .q-common { color: var(--q-common); }
+.chip { display: inline-block; font-size: .75rem; font-weight: 600; letter-spacing: .04em; padding: 1px 8px; border-radius: 999px; }
+.chip.fury { background: var(--fury-soft); color: var(--fury); }
+.chip.prot { background: var(--prot-soft); color: var(--prot); }
+.chip.both { background: var(--both-soft); color: var(--both); }
+.foot { color: var(--muted); font-size: .88rem; border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 8px; max-width: 75ch; }
+.foot p { margin: 0; }
+@media (max-width: 560px) { h1 { font-size: 1.9rem; } .tally { margin-left: 0; width: 100%; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <p style="margin:0 0 8px;font-size:.9rem"><a href="./" style="color:var(--accent)">HerbWatch</a></p>
+    <h1>Warrior Dungeon Overlap</h1>
+    <p class="lede">Dungeons ranked by how many items they drop from the WoW Forever
+      <a href="https://wowtbc.gg/warcraftforever/bis-list/fury-warrior/">Fury</a> and
+      <a href="https://wowtbc.gg/warcraftforever/bis-list/protection-warrior/">Protection</a> warrior lists on wowtbc.gg.</p>
+  </header>
+
+  <div class="controls">
+    <div class="ctl"><span id="lbl-cap">Level cap</span><div class="seg" id="cap" role="group" aria-labelledby="lbl-cap"></div></div>
+    <div class="ctl"><span id="lbl-sort">Rank by</span><div class="seg" id="sort" role="group" aria-labelledby="lbl-sort">
+      <button type="button" id="sort-total" data-v="total">Most items</button>
+      <button type="button" id="sort-cover" data-v="cover">Both specs covered</button>
+      <button type="button" id="sort-both" data-v="both">On both lists</button>
+    </div></div>
+  </div>
+
+  <p class="pick" id="pick"></p>
+
+  <div class="legend">
+    <span><i style="background:var(--fury)"></i>Fury list only</span>
+    <span><i style="background:var(--both)"></i>On both lists</span>
+    <span><i style="background:var(--prot)"></i>Protection list only</span>
+  </div>
+
+  <div class="list" id="list"></div>
+
+  <div class="foot">
+    <p id="other"></p>
+    <p>The source lists are not ranked. wowtbc.gg lists up to ten useful items per slot, in no order, so a count here means "upgrades worth a look", not strict best in slot.</p>
+    <p>Dungeons tagged "Forever" are locations new to WoW Forever. They are counted as dungeons because their drops come from named bosses, which the source does not confirm outright.</p>
+    <p>Data read from wowtbc.gg on 13 November 2026.</p>
+  </div>
+</div>
+
+<script>
+const DATA = {"20":[{"d":"Wailing Caverns","new":false,"items":[{"n":"Snake Eye Kaleidoscope","r":"rare","s":["neck"],"b":"Lady Anacondra","w":"","f":["fury","prot"],"c":null},{"n":"Serpent's Shoulders","r":"rare","s":["shoulder"],"b":"Lady Anacondra","w":"","f":["fury"],"c":null},{"n":"Glowing Lizardscale Cloak","r":"rare","s":["back"],"b":"Skum","w":"","f":["fury"],"c":null},{"n":"Mutant Scale Breastplate","r":"rare","s":["chest"],"b":"Mutanus the Devourer","w":"","f":["fury","prot"],"c":null},{"n":"Gloves of the Fang","r":"rare","s":["hands"],"b":"Druid of the Fang","w":"","f":["fury"],"c":null},{"n":"Serpent Gloves","r":"rare","s":["hands"],"b":"Lord Serpentis","w":"","f":["fury"],"c":null},{"n":"Cobrahn's Grasp","r":"rare","s":["waist"],"b":"Lord Cobrahn","w":"","f":["fury","prot"],"c":null},{"n":"Leggings of the Fang","r":"rare","s":["legs"],"b":"Lord Cobrahn","w":"","f":["fury"],"c":null},{"n":"Footpads of the Fang","r":"rare","s":["feet"],"b":"Lord Serpentis","w":"","f":["fury"],"c":null},{"n":"Stinging Viper","r":"rare","s":["main-hand","off-hand"],"b":"Lord Pythas","w":"","f":["fury","prot"],"c":null},{"n":"Sporid Cape","r":"rare","s":["back"],"b":"Verdan the Everliving","w":"","f":["prot"],"c":null},{"n":"Feyscale Cloak","r":"rare","s":["back"],"b":"Deviate Faerie Dragon","w":"","f":["prot"],"c":null},{"n":"Hulking Bands","r":"uncommon","s":["wrist"],"b":"Skum","w":"","f":["prot"],"c":null},{"n":"Stormbringer Belt","r":"rare","s":["waist"],"b":"Lord Pythas","w":"","f":["prot"],"c":null},{"n":"Savage Trodders","r":"rare","s":["feet"],"b":"Lord Serpentis","w":"","f":["prot"],"c":null},{"n":"Kresh's Back","r":"rare","s":["off-hand"],"b":"Kresh","w":"","f":["prot"],"c":null}]},{"d":"The Deadmines","new":false,"items":[{"n":"Cape of the Brotherhood","r":"rare","s":["back"],"b":"Edwin VanCleef","w":"","f":["fury","prot"],"c":null},{"n":"Gold-flecked Gloves","r":"rare","s":["hands"],"b":"Sneed","w":"","f":["fury"],"c":null},{"n":"Blackened Defias Belt","r":"rare","s":["waist"],"b":"Captain Greenskin","w":"","f":["fury"],"c":null},{"n":"Blackened Defias Leggings","r":"rare","s":["legs"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Blackened Defias Boots","r":"rare","s":["feet"],"b":"Defias Strip Miner","w":"","f":["fury"],"c":null},{"n":"First Mate Band","r":"rare","s":["finger"],"b":"Mr. Smite","w":"","f":["fury","prot"],"c":null},{"n":"Cruel Barb","r":"rare","s":["main-hand","off-hand"],"b":"Edwin VanCleef","w":"","f":["fury","prot"],"c":null},{"n":"Dull Sawblade","r":"rare","s":["ranged"],"b":"Sneed's Shredder","w":"","f":["fury","prot"],"c":null},{"n":"Miner's Cape","r":"rare","s":["back"],"b":"Miner Johnson","w":"","f":["prot"],"c":null},{"n":"Bandsaw Wristbands","r":"rare","s":["wrist"],"b":"Sneed","w":"","f":["prot"],"c":null},{"n":"Gold-plated Buckler","r":"rare","s":["off-hand"],"b":"Miner Johnson","w":"","f":["prot"],"c":null}]},{"d":"Ruins of Lordaeron","new":true,"items":[{"n":"Abomination Bones","r":"rare","s":["chest"],"b":"The Baron","w":"","f":["fury"],"c":null},{"n":"Death Bindings","r":"rare","s":["wrist"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Witherbite Bracers","r":"rare","s":["wrist"],"b":"Witherfang","w":"","f":["fury"],"c":null},{"n":"Bonerust Leggings","r":"rare","s":["legs"],"b":"Bjork","w":"","f":["fury","prot"],"c":null},{"n":"Vilewalkers","r":"rare","s":["feet"],"b":"Viktor the Vile","w":"","f":["fury","prot"],"c":null},{"n":"Atrophic Girdle","r":"rare","s":["waist"],"b":"Witherfang","w":"","f":["prot"],"c":null},{"n":"Mirror of Rath'mael","r":"rare","s":["off-hand"],"b":"Rath'mael","w":"","f":["prot"],"c":null}]},{"d":"Shadowfang Keep","new":false,"items":[{"n":"Guillotine Axe","r":"rare","s":["main-hand"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Butcher's Slicer","r":"rare","s":["main-hand","off-hand"],"b":"Razorclaw the Butcher","w":"","f":["fury","prot"],"c":null},{"n":"Shadowfang","r":"rare","s":["main-hand"],"b":"Trash drop","w":"","f":["fury","prot"],"c":null}]},{"d":"Hall of Thanes","new":true,"items":[{"n":"Golemguard Chest","r":"rare","s":["chest"],"b":"Plunder","w":"","f":["prot"],"c":null},{"n":"Kindlegem Girdle","r":"rare","s":["waist"],"b":"Magmatus","w":"","f":["prot"],"c":null}]}],"30":[{"d":"Razorfen Kraul","new":false,"items":[{"n":"Tusken Helm","r":"rare","s":["head"],"b":"Overlord Ramtusk","w":"","f":["fury"],"c":null},{"n":"Mantle of Thieves","r":"rare","s":["shoulder"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Avenger's Armor","r":"rare","s":["chest"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Pugilist Bracers","r":"rare","s":["wrist"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Pronged Reaver","r":"rare","s":["main-hand","off-hand"],"b":"Charlga Razorflank","w":"","f":["fury","prot"],"c":null},{"n":"Quillord Mail Leggings","r":"rare","s":["legs"],"b":"Overlord Ramtusk","w":"","f":["prot"],"c":null},{"n":"Heart of Agamaggan","r":"rare","s":["off-hand"],"b":"Charlga Razorflank","w":"","f":["prot"],"c":null}]},{"d":"Scarlet Monastery","new":false,"items":[{"n":"Ghostshard Talisman","r":"rare","s":["neck"],"b":"Azshir the Sleepless","w":"Graveyard","f":["fury","prot"],"c":null},{"n":"Ironspine's Eye","r":"rare","s":["finger"],"b":"Ironspine","w":"Graveyard","f":["fury"],"c":null},{"n":"Ironspine's Fist","r":"rare","s":["main-hand","off-hand"],"b":"Ironspine","w":"Graveyard","f":["fury","prot"],"c":null},{"n":"Ironspine's Ribcage","r":"rare","s":["chest"],"b":"Ironspine","w":"Graveyard","f":["prot"],"c":null},{"n":"Scarlet Boots","r":"rare","s":["feet"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Painwalker Buckler","r":"rare","s":["off-hand"],"b":"Interrogator Vishas","w":"Graveyard","f":["prot"],"c":null},{"n":"Resplendent Guardian","r":"rare","s":["off-hand"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Chesterfall Musket","r":"rare","s":["ranged"],"b":"Trash drop","w":"","f":["prot"],"c":null}]},{"d":"City of Dalaran","new":true,"items":[{"n":"Archmagister's Faceted Pendant","r":"rare","s":["neck"],"b":"Shade of the Archmage","w":"","f":["fury"],"c":null},{"n":"Unstable Crystalline Shoulderpads","r":"rare","s":["shoulder"],"b":"Unstable Sentinel","w":"","f":["fury"],"c":null},{"n":"Mana-Warped Chain Shirt","r":"rare","s":["chest"],"b":"Arcane Anomaly","w":"","f":["fury","prot"],"c":null},{"n":"Manascale Treads","r":"rare","s":["feet"],"b":"Mana Devourer","w":"","f":["fury"],"c":null},{"n":"Bonepile Gaze","r":"rare","s":["off-hand"],"b":"Lyn the Ignored","w":"","f":["prot"],"c":null}]},{"d":"Gnomeregan","new":false,"items":[{"n":"Thermaplugg Medal of Honor","r":"rare","s":["neck"],"b":"Crowd Pummeler 9-60","w":"","f":["fury"],"c":null},{"n":"Petrolspill Leggings","r":"rare","s":["legs"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Glass Shooter","r":"rare","s":["ranged"],"b":"Dark Iron Ambassador","w":"","f":["fury"],"c":null},{"n":"Caverndeep Trudgers","r":"rare","s":["feet"],"b":"Trash drop","w":"","f":["prot"],"c":null}]},{"d":"Wailing Caverns","new":false,"items":[{"n":"Glowing Lizardscale Cloak","r":"rare","s":["back"],"b":"Skum","w":"","f":["fury"],"c":null},{"n":"Cobrahn's Grasp","r":"rare","s":["waist"],"b":"Lord Cobrahn","w":"","f":["fury"],"c":null}]},{"d":"Shadowfang Keep","new":false,"items":[{"n":"Worgpelt Leggings","r":"rare","s":["legs"],"b":"Wolf Master Nandos","w":"","f":["fury"],"c":null},{"n":"Fenrus' Hide","r":"rare","s":["back"],"b":"Fenrus the Devourer","w":"","f":["prot"],"c":null},{"n":"Phantom Armor","r":"rare","s":["chest"],"b":"Deathsworn Captain","w":"","f":["prot"],"c":null}]},{"d":"Blackfathom Deeps","new":false,"items":[{"n":"Cursed Murloc Eye","r":"rare","s":["trinket"],"b":"Gelihast","w":"","f":["fury"],"c":null},{"n":"Algae Fists","r":"rare","s":["hands"],"b":"Gelihast","w":"","f":["prot"],"c":null},{"n":"Treacherous Treads","r":"rare","s":["feet"],"b":"Lorgus Jett","w":"","f":["prot"],"c":null},{"n":"Fallenroot Longbow","r":"rare","s":["ranged"],"b":"Lorgus Jett","w":"","f":["prot"],"c":null}]},{"d":"Excavation Site: Wetlands","new":true,"items":[{"n":"Golemsight Long Gun","r":"rare","s":["ranged"],"b":"Relic Guardian","w":"","f":["fury"],"c":null},{"n":"Reliquary Mantle","r":"rare","s":["shoulder"],"b":"Relic Guardian","w":"","f":["prot"],"c":null},{"n":"Raptorclaw Greaves","r":"rare","s":["feet"],"b":"Shadetooth","w":"","f":["prot"],"c":null}]},{"d":"Ruins of Lordaeron","new":true,"items":[{"n":"Phantom Armor","r":"rare","s":["chest"],"b":"Deathsworn Captain","w":"","f":["prot"],"c":null}]},{"d":"The Stockade","new":false,"items":[{"n":"Jimmied Handcuffs","r":"rare","s":["wrist"],"b":"Bruegal Ironknuckle","w":"","f":["prot"],"c":null},{"n":"Ogre Grips","r":"rare","s":["hands"],"b":"Hamhock","w":"","f":["prot"],"c":null}]}],"40":[{"d":"Scarlet Monastery","new":false,"items":[{"n":"Raging Berserker's Helm","r":"rare","s":["head"],"b":"Herod","w":"Armory","f":["fury"],"c":null},{"n":"Flintrock Shoulders","r":"rare","s":["shoulder"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Scarlet Gauntlets","r":"rare","s":["hands"],"b":"Scarlet Centurion","w":"","f":["fury"],"c":0.0208},{"n":"Scarlet Leggings","r":"rare","s":["legs"],"b":"Scarlet Commander Mograine","w":"Cathedral","f":["fury"],"c":null},{"n":"Ironspine's Eye","r":"rare","s":["finger"],"b":"Ironspine","w":"Graveyard","f":["fury"],"c":null},{"n":"Jouster's Chestplate","r":"uncommon","s":["chest"],"b":"High Inquisitor Whitemane","w":"Cathedral","f":["prot"],"c":null},{"n":"Aegis of the Scarlet Commander","r":"rare","s":["off-hand"],"b":"Scarlet Commander Mograine","w":"Cathedral","f":["prot"],"c":null},{"n":"Chesterfall Musket","r":"rare","s":["ranged"],"b":"Trash drop","w":"","f":["prot"],"c":null}]},{"d":"The Drowned City","new":true,"items":[{"n":"Waterlogged Burial Shroud","r":"rare","s":["back"],"b":"Primeval Elemental","w":"","f":["fury"],"c":null},{"n":"Oathbound Bracers","r":"rare","s":["wrist"],"b":"Zul'Alai","w":"","f":["fury"],"c":null},{"n":"Gill's Gills","r":"rare","s":["trinket"],"b":"Gill","w":"","f":["fury"],"c":null}]},{"d":"Razorfen Downs","new":false,"items":[{"n":"Quillward Harness","r":"rare","s":["chest"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Carapace of Tuten'kash","r":"rare","s":["chest"],"b":"Tuten'kash","w":"","f":["fury","prot"],"c":null},{"n":"Boar Champion's Belt","r":"rare","s":["waist"],"b":"Ragglesnout","w":"","f":["fury"],"c":null},{"n":"Icemetal Barbute","r":"rare","s":["head"],"b":"Amnennar the Coldbringer","w":"","f":["prot"],"c":null},{"n":"Abomination Chain","r":"rare","s":["neck"],"b":"Glutton","w":"","f":["prot"],"c":null},{"n":"Silky Spider Cape","r":"rare","s":["back"],"b":"Tuten'kash","w":"","f":["prot"],"c":null},{"n":"Savage Boar's Guard","r":"rare","s":["off-hand"],"b":"Ragglesnout","w":"","f":["prot"],"c":null}]},{"d":"Uldaman","new":false,"items":[{"n":"Legguards of the Vault","r":"rare","s":["legs"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Stonevault Bonebreaker","r":"rare","s":["off-hand"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Monolithic Bow","r":"rare","s":["ranged"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Horned Viking Helmet","r":"rare","s":["head"],"b":"Eric \"The Swift\"","w":"","f":["prot"],"c":null},{"n":"Chromite Pauldrons","r":"uncommon","s":["shoulder"],"b":"Grimlok","w":"","f":["prot"],"c":null},{"n":"Dark Golem Breastplate","r":"rare","s":["chest"],"b":"Obsidian Sentinel","w":"","f":["prot"],"c":null},{"n":"Skullplate Bracers","r":"rare","s":["wrist"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Olaf's All Purpose Shield","r":"rare","s":["off-hand"],"b":"Olaf","w":"","f":["prot"],"c":null},{"n":"Baelog's Shortbow","r":"rare","s":["ranged"],"b":"Baelog","w":"","f":["prot"],"c":null}]},{"d":"City of Dalaran","new":true,"items":[{"n":"Manascale Treads","r":"rare","s":["feet"],"b":"Mana Devourer","w":"","f":["fury"],"c":null}]},{"d":"Blackfathom Deeps","new":false,"items":[{"n":"Cursed Murloc Eye","r":"rare","s":["trinket"],"b":"Gelihast","w":"","f":["fury"],"c":null},{"n":"Fallenroot Longbow","r":"rare","s":["ranged"],"b":"Lorgus Jett","w":"","f":["prot"],"c":null}]},{"d":"Krol'dok Stronghold","new":true,"items":[{"n":"Slavecrusher Scepter","r":"rare","s":["off-hand","main-hand"],"b":"Slavecrusher Grox","w":"","f":["fury","prot"],"c":null},{"n":"Zarmok's Plated Signet","r":"rare","s":["finger"],"b":"Twilight Commander Zarmok","w":"","f":["prot"],"c":null}]},{"d":"Excavation Site: Wetlands","new":true,"items":[{"n":"Golemsight Long Gun","r":"rare","s":["ranged"],"b":"Relic Guardian","w":"","f":["fury"],"c":null}]},{"d":"Zul'Farrak","new":false,"items":[{"n":"Shriveled Heart","r":"uncommon","s":["neck"],"b":"Trash drop","w":"","f":["prot"],"c":null}]}],"50":[{"d":"Scarlet Monastery","new":false,"items":[{"n":"Raging Berserker's Helm","r":"rare","s":["head"],"b":"Herod","w":"Armory","f":["fury"],"c":null},{"n":"Ironspine's Eye","r":"rare","s":["finger"],"b":"Ironspine","w":"Graveyard","f":["fury"],"c":null}]},{"d":"Zul'Farrak","new":false,"items":[{"n":"Embrace of the Lycan","r":"rare","s":["head"],"b":"Chief Ukorz Sandscalp","w":"","f":["fury"],"c":null},{"n":"Blackmetal Cape","r":"rare","s":["back"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Sandstalker Ankleguards","r":"rare","s":["feet"],"b":"Zerillis","w":"","f":["fury"],"c":null},{"n":"Lifeblood Amulet","r":"rare","s":["neck"],"b":"Antu'sul","w":"","f":["prot"],"c":null},{"n":"Big Bad Pauldrons","r":"rare","s":["shoulder"],"b":"Chief Ukorz Sandscalp","w":"","f":["prot"],"c":null},{"n":"Blood Ritual Ring","r":"rare","s":["finger"],"b":"Witch Doctor Zum'rah","w":"","f":["prot"],"c":null},{"n":"Ring of Saviors","r":"epic","s":["finger"],"b":"Hydromancer Velratha","w":"","f":["prot"],"c":null},{"n":"Gutcutter Hatchet","r":"rare","s":["ranged"],"b":"Nekrum Gutchewer","w":"","f":["prot"],"c":null}]},{"d":"Alcaz Prison","new":true,"items":[{"n":"Sentimental Locket","r":"rare","s":["neck"],"b":"Katerina the Cleaner","w":"","f":["fury"],"c":null},{"n":"Defias Enforcer's Shoulderpads","r":"rare","s":["shoulder"],"b":"The Questioner","w":"","f":["fury"],"c":null},{"n":"Cutthroat Chestguard","r":"rare","s":["chest"],"b":"Katerina the Cleaner","w":"","f":["fury"],"c":null},{"n":"Fingerbreaker Stamp","r":"rare","s":["trinket"],"b":"The Questioner","w":"","f":["fury","prot"],"c":null},{"n":"Cloak of the Tidemistress","r":"rare","s":["back"],"b":"Tidemistress Ca'zass","w":"","f":["prot"],"c":null},{"n":"Girdle of Extracted Answers","r":"rare","s":["waist"],"b":"The Questioner","w":"","f":["prot"],"c":null},{"n":"Wrex's Pinky Ring","r":"rare","s":["finger"],"b":"Overseer Wrex","w":"","f":["prot"],"c":null}]},{"d":"Blackrock Depths","new":false,"items":[{"n":"Blackveil Cape","r":"rare","s":["back"],"b":"High Interrogator Gerstahn","w":"","f":["fury"],"c":null},{"n":"Blisterbane Wrap","r":"rare","s":["back"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Mixologist's Tunic","r":"rare","s":["chest"],"b":"Plugger Spazzring","w":"","f":["fury"],"c":null},{"n":"Girdle of Beastial Fury","r":"rare","s":["waist"],"b":"Eviscerator","w":"","f":["fury"],"c":null},{"n":"Battlechaser's Greaves","r":"rare","s":["feet"],"b":"Trash drop","w":"","f":["fury","prot"],"c":null},{"n":"Shadefiend Boots","r":"rare","s":["feet"],"b":"Anub'shiah","w":"","f":["fury"],"c":null},{"n":"Grizzle's Skinner","r":"rare","s":["main-hand"],"b":"Grizzle","w":"","f":["fury","prot"],"c":null},{"n":"Houndmaster's Rifle","r":"rare","s":["ranged"],"b":"Houndmaster Grebmar","w":"","f":["fury"],"c":null},{"n":"Foreman's Head Protector","r":"rare","s":["head"],"b":"Fineous Darkvire","w":"","f":["prot"],"c":null},{"n":"Graverot Cape","r":"rare","s":["back"],"b":"Anub'shiah","w":"","f":["prot"],"c":null},{"n":"Carapace of Anub'shiah","r":"rare","s":["chest"],"b":"Anub'shiah","w":"","f":["prot"],"c":null},{"n":"Spiderfang Carapace","r":"rare","s":["chest"],"b":"Hedrum the Creeper","w":"","f":["prot"],"c":null},{"n":"Stonewall Girdle","r":"rare","s":["waist"],"b":"Grizzle","w":"","f":["prot"],"c":null},{"n":"Stoneshell Guard","r":"rare","s":["off-hand"],"b":"Lord Roccor","w":"","f":["prot"],"c":null}]},{"d":"The Drowned City","new":true,"items":[{"n":"Waterlogged Burial Shroud","r":"rare","s":["back"],"b":"Primeval Elemental","w":"","f":["fury"],"c":null},{"n":"Oathbound Bracers","r":"rare","s":["wrist"],"b":"Zul'Alai","w":"","f":["fury"],"c":null},{"n":"Gill's Gills","r":"rare","s":["trinket"],"b":"Gill","w":"","f":["fury"],"c":null}]},{"d":"Razorfen Downs","new":false,"items":[{"n":"Quillward Harness","r":"rare","s":["chest"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Abomination Chain","r":"rare","s":["neck"],"b":"Glutton","w":"","f":["prot"],"c":null}]},{"d":"Maraudon","new":false,"items":[{"n":"Infernal Trickster Leggings","r":"rare","s":["legs"],"b":"Lord Vyletongue","w":"","f":["fury"],"c":null},{"n":"Albino Crocscale Boots","r":"rare","s":["feet"],"b":"Rotgrip","w":"","f":["fury"],"c":null},{"n":"Blackstone Ring","r":"rare","s":["finger"],"b":"Princess Theradras","w":"","f":["fury"],"c":0.245},{"n":"Helm of the Mountain","r":"rare","s":["head"],"b":"Landslide","w":"","f":["prot"],"c":null},{"n":"Grovekeeper's Drape","r":"rare","s":["back"],"b":"Celebras the Cursed","w":"","f":["prot"],"c":null},{"n":"Elemental Rockridge Leggings","r":"rare","s":["legs"],"b":"Princess Theradras","w":"","f":["prot"],"c":0.1946},{"n":"Putridus Wall","r":"rare","s":["off-hand"],"b":"Lord Vyletongue","w":"","f":["prot"],"c":null}]},{"d":"Blackfathom Deeps","new":false,"items":[{"n":"Cursed Murloc Eye","r":"rare","s":["trinket"],"b":"Gelihast","w":"","f":["fury"],"c":null}]},{"d":"Krol'dok Stronghold","new":true,"items":[{"n":"Emblem of Slamming","r":"rare","s":["trinket"],"b":"Overlord Mugg","w":"","f":["fury"],"c":null},{"n":"Chain of the Corruptor","r":"rare","s":["neck"],"b":"Nar'gurk","w":"","f":["prot"],"c":null},{"n":"Krol'dok Warplate Chest","r":"rare","s":["chest"],"b":"Nar'gurk","w":"","f":["prot"],"c":null},{"n":"Krol'dok Warplate Legplates","r":"rare","s":["legs"],"b":"Trash Drop","w":"","f":["prot"],"c":null}]},{"d":"The Temple of Atal'Hakkar","new":false,"items":[{"n":"Stinging Bow","r":"rare","s":["ranged"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Nightfall Drape","r":"rare","s":["back"],"b":"Trash drop","w":"","f":["prot"],"c":0.0874},{"n":"Warrior's Embrace","r":"rare","s":["chest"],"b":"Trash drop","w":"","f":["prot"],"c":0.3076},{"n":"Silvershell Leggings","r":"rare","s":["legs"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Might of Hakkar","r":"rare","s":["main-hand"],"b":"Trash drop","w":"","f":["prot"],"c":0.1649}]},{"d":"Uldaman","new":false,"items":[{"n":"Monolithic Bow","r":"rare","s":["ranged"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Emberscale Cape","r":"rare","s":["back"],"b":"Galgann Firehammer","w":"","f":["prot"],"c":null},{"n":"Dark Golem Breastplate","r":"rare","s":["chest"],"b":"Obsidian Sentinel","w":"","f":["prot"],"c":null}]}],"60":[{"d":"Blackrock Spire","new":false,"items":[{"n":"Eye of Rend","r":"rare","s":["head"],"b":"Warchief Rend Blackhand","w":"Upper","f":["fury"],"c":null},{"n":"Emberfury Talisman","r":"rare","s":["neck"],"b":"Pyroguard Emberseer","w":"Upper","f":["fury"],"c":null},{"n":"Truestrike Shoulders","r":"rare","s":["shoulder"],"b":"Pyroguard Emberseer","w":"Upper","f":["fury"],"c":null},{"n":"Shadow Prowler's Cloak","r":"rare","s":["back"],"b":"General Drakkisath","w":"Upper","f":["fury"],"c":null},{"n":"Battleborn Armbraces","r":"rare","s":["wrist"],"b":"Warchief Rend Blackhand","w":"Upper","f":["fury"],"c":null},{"n":"Slashclaw Bracers","r":"rare","s":["wrist"],"b":"Halycon","w":"Lower","f":["fury"],"c":null},{"n":"Blackmist Armguards","r":"rare","s":["wrist"],"b":"The Beast","w":"Upper","f":["fury"],"c":null},{"n":"Trueaim Gauntlets","r":"rare","s":["hands"],"b":"Shadow Hunter Vosh'gajin","w":"Lower","f":["fury"],"c":null},{"n":"Marksman's Girdle","r":"rare","s":["waist"],"b":"Urok Doomhowl","w":"Lower","f":["fury"],"c":null},{"n":"Blademaster Leggings","r":"rare","s":["legs"],"b":"The Beast","w":"Upper","f":["fury"],"c":null},{"n":"Painweaver Band","r":"rare","s":["finger"],"b":"General Drakkisath","w":"Upper","f":["fury"],"c":null},{"n":"Smolderweb's Eye","r":"rare","s":["trinket"],"b":"Mother Smolderweb","w":"Lower","f":["fury"],"c":null},{"n":"Heart of Wyrmthalak","r":"rare","s":["trinket"],"b":"Overlord Wyrmthalak","w":"Lower","f":["fury"],"c":null},{"n":"Dal'Rend's Sacred Charge","r":"rare","s":["main-hand"],"b":"Warchief Rend Blackhand","w":"Upper","f":["fury"],"c":null},{"n":"Blackcrow","r":"rare","s":["ranged"],"b":"Shadow Hunter Vosh'gajin","w":"Lower","f":["fury"],"c":null},{"n":"Gyth's Skull","r":"rare","s":["head"],"b":"Gyth","w":"Upper","f":["prot"],"c":null},{"n":"Spaulders of Valor","r":"rare","s":["shoulder"],"b":"Warchief Rend Blackhand","w":"Upper","f":["prot"],"c":null},{"n":"Slamshot Shoulders","r":"rare","s":["shoulder"],"b":"Highlord Omokk","w":"Lower","f":["prot"],"c":null},{"n":"Lightforge Spaulders","r":"rare","s":["shoulder"],"b":"The Beast","w":"Upper","f":["prot"],"c":null},{"n":"Bloodmoon Cloak","r":"rare","s":["back"],"b":"The Beast","w":"Upper","f":["prot"],"c":null},{"n":"Breastplate of Valor","r":"rare","s":["chest"],"b":"General Drakkisath","w":"Upper","f":["prot"],"c":null},{"n":"Bracers of Valor","r":"rare","s":["wrist"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Brigam Girdle","r":"rare","s":["waist"],"b":"General Drakkisath","w":"Upper","f":["prot"],"c":null},{"n":"Handcrafted Mastersmith Girdle","r":"rare","s":["waist"],"b":"Goraluk Anvilcrack","w":"Upper","f":["prot"],"c":null},{"n":"Warmaster Legguards","r":"rare","s":["legs"],"b":"Warchief Rend Blackhand","w":"Upper","f":["prot"],"c":null},{"n":"Ribsteel Footguards","r":"rare","s":["feet"],"b":"Urok Doomhowl","w":"Lower","f":["prot"],"c":null},{"n":"Draconian Deflector","r":"rare","s":["off-hand"],"b":"General Drakkisath","w":"Upper","f":["prot"],"c":null}]},{"d":"Stratholme","new":false,"items":[{"n":"Mask of the Unforgiven","r":"rare","s":["head"],"b":"The Unforgiven","w":"","f":["fury"],"c":null},{"n":"Star of Mystaria","r":"rare","s":["neck"],"b":"Balnazzar","w":"","f":["fury"],"c":null},{"n":"Cape of the Black Baron","r":"rare","s":["back"],"b":"Baron Rivendare","w":"","f":["fury"],"c":null},{"n":"Vambraces of the Sadist","r":"rare","s":["wrist"],"b":"Timmy the Cruel","w":"","f":["fury"],"c":null},{"n":"Cannonball Runner","r":"rare","s":["trinket"],"b":"Cannon Master Willey","w":"","f":["fury"],"c":null},{"n":"Helm of the Executioner","r":"rare","s":["head"],"b":"Baron Rivendare","w":"","f":["prot"],"c":null},{"n":"Stoneskin Gargoyle Cape","r":"rare","s":["back"],"b":"Stonespine","w":"","f":["prot"],"c":null},{"n":"Belt of Valor","r":"rare","s":["waist"],"b":"Trash drop","w":"","f":["prot"],"c":null},{"n":"Master Cannoneer Boots","r":"rare","s":["feet"],"b":"Cannon Master Willey","w":"","f":["prot"],"c":null},{"n":"Band of Flesh","r":"rare","s":["finger"],"b":"Ramstein the Gorger","w":"","f":["prot"],"c":null},{"n":"Carapace Spine Crossbow","r":"rare","s":["ranged"],"b":"Nerub'enkan","w":"","f":["prot"],"c":null},{"n":"Willey's Portable Howitzer","r":"rare","s":["ranged"],"b":"Cannon Master Willey","w":"","f":["prot"],"c":null}]},{"d":"Blackrock Depths","new":false,"items":[{"n":"Ragefury Eyepatch","r":"rare","s":["head"],"b":"Hurley Blackbreath","w":"","f":["fury"],"c":null},{"n":"Dark Warder's Pauldrons","r":"rare","s":["shoulder"],"b":"Warder Stilgiss","w":"","f":["fury"],"c":null},{"n":"Blackveil Cape","r":"rare","s":["back"],"b":"High Interrogator Gerstahn","w":"","f":["fury"],"c":null},{"n":"Savage Gladiator Chain","r":"epic","s":["chest"],"b":"Gorosh the Dervish","w":"","f":["fury"],"c":null},{"n":"Battlechaser's Greaves","r":"rare","s":["feet"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Swiftwalker Boots","r":"rare","s":["feet"],"b":"Princess Moira Bronzebeard","w":"","f":["fury"],"c":null},{"n":"Hand of Justice","r":"rare","s":["trinket"],"b":"Emperor Dagran Thaurissan","w":"","f":["fury"],"c":null},{"n":"Golem Skull Helm","r":"rare","s":["head"],"b":"Magmus","w":"","f":["prot"],"c":null},{"n":"Verek's Collar","r":"rare","s":["neck"],"b":"Verek","w":"","f":["prot"],"c":null},{"n":"Ebonsteel Spaulders","r":"rare","s":["shoulder"],"b":"Princess Moira Bronzebeard","w":"","f":["prot"],"c":null},{"n":"The Emperor's New Cape","r":"rare","s":["back"],"b":"Emperor Dagran Thaurissan","w":"","f":["prot"],"c":null},{"n":"Stonewall Girdle","r":"rare","s":["waist"],"b":"Grizzle","w":"","f":["prot"],"c":null},{"n":"Shalehusk Boots","r":"rare","s":["feet"],"b":"Panzor the Invincible","w":"","f":["prot"],"c":null}]},{"d":"Alcaz Prison","new":true,"items":[{"n":"Sentimental Locket","r":"rare","s":["neck"],"b":"Katerina the Cleaner","w":"","f":["fury"],"c":null},{"n":"Cloak of the Tidemistress","r":"rare","s":["back"],"b":"Tidemistress Ca'zass","w":"","f":["prot"],"c":null},{"n":"Fingerbreaker Stamp","r":"rare","s":["trinket"],"b":"The Questioner","w":"","f":["prot"],"c":null}]},{"d":"Dire Maul","new":false,"items":[{"n":"Tempest Talisman","r":"rare","s":["neck"],"b":"Hydrospawn","w":"East","f":["fury"],"c":null},{"n":"Heliotrope Cloak","r":"rare","s":["back"],"b":"Trash drop","w":"","f":["fury"],"c":0.0649},{"n":"Ogre Forged Hauberk","r":"rare","s":["chest"],"b":"Gordok Mastiff","w":"","f":["fury"],"c":null},{"n":"Marksman Bands","r":"rare","s":["wrist"],"b":"Trash drop","w":"","f":["fury"],"c":null},{"n":"Bracers of the Eclipse","r":"rare","s":["wrist"],"b":"Prince Tortheldrin","w":"West","f":["fury"],"c":null},{"n":"Warpwood Binding","r":"rare","s":["waist"],"b":"Tendris Warpwood","w":"West","f":["fury"],"c":null},{"n":"Tarnished Elven Ring","r":"rare","s":["finger"],"b":"Mizzle the Crafty","w":"","f":["fury"],"c":0.031},{"n":"Counterattack Lodestone","r":"rare","s":["trinket"],"b":"Mizzle the Crafty","w":"","f":["fury"],"c":0.011},{"n":"Vigilance Charm","r":"rare","s":["trinket"],"b":"Immol'thar","w":"West","f":["fury","prot"],"c":null},{"n":"Satyr's Bow","r":"rare","s":["ranged"],"b":"Zevrim Thornhoof","w":"East","f":["fury"],"c":null},{"n":"Stoneshatter","r":"rare","s":["ranged"],"b":"Prince Tortheldrin","w":"West","f":["fury"],"c":null},{"n":"Helm of Awareness","r":"rare","s":["head"],"b":"Zevrim Thornhoof","w":"East","f":["prot"],"c":null},{"n":"Redoubt Cloak","r":"rare","s":["back"],"b":"Mizzle the Crafty","w":"","f":["prot"],"c":0.011},{"n":"Kromcrush's Chestplate","r":"rare","s":["chest"],"b":"Captain Kromcrush","w":"North","f":["prot"],"c":null},{"n":"Grimy Metal Boots","r":"rare","s":["feet"],"b":"King Gordok","w":"North","f":["prot"],"c":null}]},{"d":"Scholomance","new":false,"items":[{"n":"Death's Clutch","r":"rare","s":["shoulder"],"b":"Ras Frostwhisper","w":"","f":["fury"],"c":0.1411},{"n":"Tombstone Breastplate","r":"rare","s":["chest"],"b":"Darkmaster Gandling","w":"","f":["fury"],"c":null},{"n":"Windreaver Greaves","r":"rare","s":["feet"],"b":"Kirtonos the Herald","w":"","f":["fury"],"c":null},{"n":"Bloodmail Boots","r":"rare","s":["feet"],"b":"Trash drop","w":"","f":["fury"],"c":0.0308},{"n":"Shadowcraft Boots","r":"rare","s":["feet"],"b":"Rattlegore","w":"","f":["fury"],"c":null},{"n":"Helm of Valor","r":"rare","s":["head"],"b":"Darkmaster Gandling","w":"","f":["prot"],"c":null},{"n":"Lightforge Helm","r":"rare","s":["head"],"b":"Darkmaster Gandling","w":"","f":["prot"],"c":null},{"n":"Deathbone Chestplate","r":"rare","s":["chest"],"b":"Trash drop","w":"","f":["prot"],"c":0.0229},{"n":"Vigorsteel Vambraces","r":"rare","s":["wrist"],"b":"Darkmaster Gandling","w":"","f":["prot"],"c":null},{"n":"Boneclenched Gauntlets","r":"rare","s":["hands"],"b":"Ras Frostwhisper","w":"","f":["prot"],"c":0.1477},{"n":"Deathbone Girdle","r":"rare","s":["waist"],"b":"Trash drop","w":"","f":["prot"],"c":0.0319},{"n":"Wraithplate Leggings","r":"rare","s":["legs"],"b":"Jandice Barov","w":"","f":["prot"],"c":null},{"n":"Boots of Valor","r":"rare","s":["feet"],"b":"Kirtonos the Herald","w":"","f":["prot"],"c":null}]},{"d":"Blackmaw Hold","new":true,"items":[{"n":"Spike Crested Bracers","r":"rare","s":["wrist"],"b":"Bonesnout the Unbroken","w":"","f":["fury","prot"],"c":null},{"n":"Behemoth Bones","r":"rare","s":["trinket"],"b":"Blackmaw Behemoth","w":"","f":["fury"],"c":null},{"n":"Lucky Shovelnose Tuft","r":"rare","s":["trinket"],"b":"Bonesnout the Unbroken","w":"","f":["fury","prot"],"c":null},{"n":"Scalding Flamehoof","r":"rare","s":["trinket"],"b":"Varrox Bleakhoof","w":"","f":["prot"],"c":null}]},{"d":"Blackfathom Deeps","new":false,"items":[{"n":"Cursed Murloc Eye","r":"rare","s":["trinket"],"b":"Gelihast","w":"","f":["fury"],"c":null}]}]};
+const OTHER = {"20": {"crafted": 61, "location unknown": 18, "quests": 77, "reputation": 19, "open world and battlegrounds": 11, "world drops": 27, "vendors": 3}, "30": {"crafted": 56, "world drops": 46, "open world and battlegrounds": 16, "quests": 71, "location unknown": 16, "reputation": 34, "vendors": 1}, "40": {"world drops": 78, "crafted": 28, "location unknown": 69, "open world and battlegrounds": 9, "reputation": 34, "quests": 43, "vendors": 1}, "50": {"quests": 57, "location unknown": 63, "crafted": 47, "world drops": 46, "open world and battlegrounds": 7, "reputation": 39}, "60": {"crafted": 53, "quests": 28, "location unknown": 37, "world drops": 18, "reputation": 46, "honor vendor": 21, "vendors": 8, "open world and battlegrounds": 18}};
+const SLOT = {head:"Head",neck:"Neck",shoulder:"Shoulder",back:"Back",chest:"Chest",wrist:"Wrist",hands:"Hands",waist:"Waist",legs:"Legs",feet:"Feet",finger:"Ring",trinket:"Trinket","main-hand":"Main hand","off-hand":"Off hand",ranged:"Ranged"};
+const SLOT_ORDER = Object.keys(SLOT);
+let cap = "60", sort = "total";
+try { cap = localStorage.getItem("wdo-cap") || cap; sort = localStorage.getItem("wdo-sort") || sort; } catch (e) {}
+if (!DATA[cap]) cap = "60";
+
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const kind = it => it.f.length === 2 ? "both" : it.f[0];
+const KIND_ORDER = {both: 0, fury: 1, prot: 2};
+const KIND_LABEL = {both: "Both", fury: "Fury", prot: "Prot"};
+
+function stats(d) {
+  const fury = d.items.filter(i => i.f.includes("fury")).length;
+  const prot = d.items.filter(i => i.f.includes("prot")).length;
+  const both = d.items.filter(i => i.f.length === 2).length;
+  return {total: d.items.length, fury, prot, both, cover: Math.min(fury, prot)};
+}
+
+function render() {
+  const rows = DATA[cap].map(d => ({...d, st: stats(d)}));
+  const key = {total: r => [r.st.total, r.st.cover, r.st.both], cover: r => [r.st.cover, r.st.total, r.st.both], both: r => [r.st.both, r.st.cover, r.st.total]}[sort];
+  rows.sort((a, b) => { const x = key(a), y = key(b); for (let i = 0; i < 3; i++) if (x[i] !== y[i]) return y[i] - x[i]; return a.d.localeCompare(b.d); });
+  const max = Math.max(...rows.map(r => r.st.total), 1);
+
+  document.getElementById("list").innerHTML = rows.map((r, n) => {
+    const s = r.st, fo = s.fury - s.both, po = s.prot - s.both;
+    const seg = (v, c) => v ? `<span style="width:${(v / max * 100).toFixed(2)}%;background:var(--${c})"></span>` : "";
+    const wings = {};
+    r.items.forEach(i => { if (i.w) wings[i.w] = (wings[i.w] || 0) + 1; });
+    const noWing = r.items.filter(i => !i.w).length;
+    const wingLine = Object.keys(wings).length
+      ? `<p class="wings">${Object.entries(wings).sort((a, b) => b[1] - a[1]).map(([w, c]) => `${esc(w)} ${c}`).join(" · ")}${noWing ? ` · any wing ${noWing}` : ""}</p>` : "";
+    const items = [...r.items].sort((a, b) => KIND_ORDER[kind(a)] - KIND_ORDER[kind(b)] || SLOT_ORDER.indexOf(a.s[0]) - SLOT_ORDER.indexOf(b.s[0]) || a.n.localeCompare(b.n));
+    return `<section class="dg">
+      <div class="dg-head">
+        <span class="rank">${n + 1}</span><h2>${esc(r.d)}</h2>${r.new ? '<span class="tag">Forever</span>' : ""}
+        <div class="tally">
+          <span><strong>${s.total}</strong>items</span>
+          <span class="t-fury"><strong>${s.fury}</strong>Fury</span>
+          <span class="t-prot"><strong>${s.prot}</strong>Prot</span>
+          <span class="t-both"><strong>${s.both}</strong>on both</span>
+        </div>
+      </div>
+      <div class="bar" role="img" aria-label="${fo} Fury only, ${s.both} on both lists, ${po} Protection only">${seg(fo, "fury")}${seg(s.both, "both")}${seg(po, "prot")}</div>
+      ${wingLine}
+      <div class="tbl"><table>
+        <thead><tr><th>Item</th><th>Slot</th><th>Drops from</th><th>For</th></tr></thead>
+        <tbody>${items.map(i => `<tr>
+          <td class="item q-${esc(i.r)}">${esc(i.n)}</td>
+          <td class="slot">${i.s.map(x => SLOT[x] || x).join(", ")}</td>
+          <td class="from">${i.w ? esc(i.w) + " · " : ""}${esc(i.b)}${i.c ? ` (${(i.c * 100).toFixed(1)}%)` : ""}</td>
+          <td class="for"><span class="chip ${kind(i)}">${KIND_LABEL[kind(i)]}</span></td>
+        </tr>`).join("")}</tbody>
+      </table></div>
+    </section>`;
+  }).join("");
+
+  const top = rows.slice(0, 3).filter(r => r.st.total);
+  const totalItems = rows.reduce((a, r) => a + r.st.total, 0);
+  document.getElementById("pick").innerHTML = top.length
+    ? `At level ${cap}, run ${top.map(r => `<b>${esc(r.d)}</b> (${r.st.total} items: ${r.st.fury} Fury, ${r.st.prot} Prot)`).join(", then ")}. ${rows.length} dungeons drop ${totalItems} listed items in total.`
+    : `No dungeon drops are listed at level ${cap}.`;
+
+  const o = OTHER[cap];
+  document.getElementById("other").textContent = "Not counted at level " + cap + ": list entries that come from outside dungeons. " +
+    Object.entries(o).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${k} ${v}`).join(", ") + ".";
+
+  document.querySelectorAll("#cap button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === cap));
+  document.querySelectorAll("#sort button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === sort));
+}
+
+document.getElementById("cap").innerHTML = ["20", "30", "40", "50", "60"].map(c => `<button type="button" id="cap-${c}" data-v="${c}">${c}</button>`).join("");
+document.getElementById("cap").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; cap = b.dataset.v; try { localStorage.setItem("wdo-cap", cap); } catch (e) {} render(); });
+document.getElementById("sort").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; sort = b.dataset.v; try { localStorage.setItem("wdo-sort", sort); } catch (e) {} render(); });
+render();
+</script>
+
+</body></html>
