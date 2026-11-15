@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Waylaid Crate Costs</title><style>
+:root{--bg:#faf9f5;--fg:#1c1b18;--mute:#6b6a62;--line:#dddbd2;--card:#fff;--link:#1f6f4a;--good:#1a7f4b}
+@media(prefers-color-scheme:dark){:root{--bg:#161614;--fg:#ecebe6;--mute:#9a998f;--line:#33322e;--card:#1f1f1c;--link:#4cc38a;--good:#4cc38a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,sans-serif;
+ padding:32px max(16px,env(safe-area-inset-right,0px)) 56px max(16px,env(safe-area-inset-left,0px))}
+main{max-width:860px;margin:0 auto}
+h1{font-size:26px;line-height:1.2;margin:0 0 4px;text-wrap:balance}
+.sub,.dim{color:var(--mute);font-size:14px}.sub{margin:0}
+a{color:var(--link)}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 16px;margin:22px 0 6px}
+.ctl label{font-size:14px;color:var(--mute)}
+.ctl input{font:inherit;width:6.5em;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--card);color:var(--fg)}
+.ctl input:focus-visible{outline:2px solid var(--link);outline-offset:1px}
+.tw{overflow-x:auto;margin:10px 0 0;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+th{color:var(--mute);font-weight:500;font-size:12px;white-space:nowrap}
+td.n,th.n{text-align:right;white-space:nowrap}
+td.name{font-weight:600}
+tr.first td.tot{color:var(--good);font-weight:700}
+.warn{border-left:3px solid #c77d00;padding:4px 12px;margin:12px 0 0;font-size:14px;max-width:70ch}
+.note{color:var(--mute);font-size:14px;margin:14px 0 0;max-width:70ch}
+details{margin:8px 0;border:1px solid var(--line);border-radius:8px;background:var(--card);padding:2px 12px}
+summary{cursor:pointer;padding:8px 0;font-weight:600}
+summary:focus-visible{outline:2px solid var(--link);outline-offset:2px}
+details table{font-size:13px}
+details .tw{border:0;margin:0 0 8px}
+h2{font-size:18px;margin:30px 0 4px}
+</style></head>
+<body><main>
+<p class="dim"><a href="index.html">HerbWatch</a></p>
+<h1>Waylaid Crate Costs</h1>
+<p class="sub">Journeyman crates, US PvP Alliance &middot; prices observed Sat 14 Nov 2026, 16:59</p>
+<div class="ctl"><label for="n">How many crates</label>
+<input id="n" type="number" min="0" step="1" value="180" inputmode="numeric">
+<label for="p">Turn-in pays per crate (silver)</label>
+<input id="p" type="number" min="0" step="0.01" value="5" inputmode="decimal">
+<label for="f">Favor per crate (1 to 6)</label>
+<input id="f" type="number" min="0" step="0.5" value="10" placeholder="not set" inputmode="decimal"></div>
+<div class="tw"><table><thead><tr><th>Crate</th><th class="n">Crate</th><th>Cheapest fill</th><th class="n">Fill</th><th class="n">Total each</th><th class="n">Net each</th><th class="n">Net per Favor</th><th class="n">Net for crates</th></tr></thead><tbody><tr class="first" data-lo="3147" data-hi="3641"><td class="name">Textiles</td><td class="n">12s 7c</td><td>20 x Medium Leather</td><td class="n">19s 40c</td><td class="n">31s 47c</td><td class="n tot net">26s 47c</td><td class="n fav">2s 65c</td><td class="n cnt">47g 64s to 56g 53s</td></tr><tr class="" data-lo="3710" data-hi="4801"><td class="name">Herbs</td><td class="n">21s 30c</td><td>10 x Wild Steelbloom</td><td class="n">15s 80c</td><td class="n">37s 10c</td><td class="n tot net">32s 10c</td><td class="n fav">3s 21c</td><td class="n cnt">57g 78s to 77g 41s</td></tr><tr class="" data-lo="5701" data-hi="6577"><td class="name">Parts</td><td class="n">27s 49c</td><td>4 x Bronze Framework</td><td class="n">29s 52c</td><td class="n">57s 1c</td><td class="n tot net">52s 1c</td><td class="n fav">5s 20c</td><td class="n cnt">93g 61s to 109g 38s</td></tr><tr class="" data-lo="5760" data-hi="7722"><td class="name">Fabrics</td><td class="n">49s</td><td>2 x Cured Medium Hide</td><td class="n">8s 60c</td><td class="n">57s 60c</td><td class="n tot net">52s 60c</td><td class="n fav">5s 26c</td><td class="n cnt">94g 68s to 129g 99s</td></tr><tr class="" data-lo="5950" data-hi="6376"><td class="name">Ingots</td><td class="n">11s</td><td>10 x Silver Bar</td><td class="n">48s 50c</td><td class="n">59s 50c</td><td class="n tot net">54s 50c</td><td class="n fav">5s 45c</td><td class="n cnt">98g 10s to 105g 76s</td></tr><tr class="" data-lo="6520" data-hi="7224"><td class="name">Ore</td><td class="n">2s 80c</td><td>10 x Silver Ore</td><td class="n">62s 40c</td><td class="n">65s 20c</td><td class="n tot net">60s 20c</td><td class="n fav">6s 2c</td><td class="n cnt">108g 36s to 121g 3s</td></tr><tr class="" data-lo="6816" data-hi="6893"><td class="name">Curiosities</td><td class="n">3s</td><td>4 x Greater Astral Essence</td><td class="n">65s 16c</td><td class="n">68s 16c</td><td class="n tot net">63s 16c</td><td class="n fav">6s 32c</td><td class="n cnt">113g 68s to 115g 7s</td></tr></tbody></table></div>
+<p class="note"><strong>Total each</strong> is the lowest crate listing plus the cheapest fill at lowest
+listings. <strong>Net</strong> takes off the silver the turn-in pays, which you can set above (check the
+amount in game); a minus sign means the turn-in pays more than the crate costs. <strong>Net per
+Favor</strong> divides the net cost by the Favor per crate you enter above (it varies with crate level, so
+try 1 and 6 for the two ends). <strong>Net for
+crates</strong> runs from every item at its lowest listing up to every item at its market value: a big
+buy uses up the cheap listings, so the real cost lands between the two.</p>
+<h2>The whole plan: 120 turn-ins (6000 reputation)</h2><div class="tw"><table><thead><tr><th>Step</th><th class="n">How many</th><th class="n">Lowest</th><th class="n">Market value</th></tr></thead><tbody><tr><td>Earn Favor: Textiles crates, filled with 20 Medium Leather each (10 Favor, 5s back)</td><td class="n">180</td><td class="n">47g 64s</td><td class="n">56g 53s</td></tr><tr><td>Empty Ore crates for the receipts (1s back)</td><td class="n">120</td><td class="n">2g 16s</td><td class="n">3g 88s</td></tr><tr><td><strong>Total</strong></td><td></td><td class="n"><strong>49g 80s</strong></td><td class="n"><strong>60g 42s</strong></td></tr></tbody></table></div><p class="warn"><strong>Not enough listed.</strong> The plan needs 3600 Medium Leather and only 222 are listed, so the price will climb as you buy. Treat the lowest figure as unreachable and expect to land above the market-value one.</p><p class="note">120 receipts use 1800 Favor (15 each), so 180 Favor crates are needed. The Forged Delivery Receipt price is not included. The plan is from a player's post: the first 1000 reputation (Neutral to Friendly) still has to come from writs.</p>
+<h2>Every fill option</h2>
+<details><summary>Textiles crate: every fill option</summary><p class="dim">The crate: 12s 7c lowest, 16s 61c market value, 370 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>20 x Medium Leather</td><td class="n">19s 40c</td><td class="n">19s 80c</td><td class="n">222</td></tr><tr><td>20 x Wool Cloth</td><td class="n">26s</td><td class="n">29s</td><td class="n">164</td></tr><tr><td>40 x Silk Cloth</td><td class="n">79s 20c</td><td class="n">81s 60c</td><td class="n">152</td></tr></tbody></table></div></details><details><summary>Herbs crate: every fill option</summary><p class="dim">The crate: 21s 30c lowest, 30s 71c market value, 183 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>10 x Wild Steelbloom</td><td class="n">15s 80c</td><td class="n">17s 30c</td><td class="n">310</td></tr><tr><td>10 x Kingsblood</td><td class="n">16s 80c</td><td class="n">19s 40c</td><td class="n">640</td></tr><tr><td>10 x Bruiseweed</td><td class="n">19s</td><td class="n">19s 60c</td><td class="n">72</td></tr><tr><td>10 x Grave Moss</td><td class="n">19s 80c</td><td class="n">25s 20c</td><td class="n">326</td></tr><tr><td>10 x Stranglekelp</td><td class="n">25s 70c</td><td class="n">29s 30c</td><td class="n">253</td></tr></tbody></table></div></details><details><summary>Parts crate: every fill option</summary><p class="dim">The crate: 27s 49c lowest, 34s 97c market value, 140 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>4 x Bronze Framework</td><td class="n">29s 52c</td><td class="n">30s 80c</td><td class="n">39</td></tr><tr><td>7 x Whirring Bronze Gizmo</td><td class="n">35s</td><td class="n">39s 34c</td><td class="n">125</td></tr><tr><td>8 x Bronze Tube</td><td class="n">36s</td><td class="n">42s 64c</td><td class="n">53</td></tr><tr><td>45 x Gold Power Core</td><td class="n">2g 46s</td><td class="n">2g 51s</td><td class="n">78</td></tr></tbody></table></div></details><details><summary>Fabrics crate: every fill option</summary><p class="dim">The crate: 49s lowest, 68s 60c market value, 152 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>2 x Cured Medium Hide</td><td class="n">8s 60c</td><td class="n">8s 62c</td><td class="n">68</td></tr><tr><td>6 x Bolt of Woolen Cloth</td><td class="n">25s 80c</td><td class="n">27s 96c</td><td class="n">81</td></tr><tr><td>10 x Bolt of Silk Cloth</td><td class="n">84s 60c</td><td class="n">84s 90c</td><td class="n">122</td></tr></tbody></table></div></details><details><summary>Ingots crate: every fill option</summary><p class="dim">The crate: 11s lowest, 14s 66c market value, 499 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>10 x Silver Bar</td><td class="n">48s 50c</td><td class="n">49s 10c</td><td class="n">279</td></tr><tr><td>20 x Iron Bar</td><td class="n">69s 20c</td><td class="n">73s 60c</td><td class="n">227</td></tr></tbody></table></div></details><details><summary>Ore crate: every fill option</summary><p class="dim">The crate: 2s 80c lowest, 4s 24c market value, 180 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>10 x Silver Ore</td><td class="n">62s 40c</td><td class="n">68s</td><td class="n">227</td></tr><tr><td>20 x Iron Ore</td><td class="n">64s 40c</td><td class="n">65s 60c</td><td class="n">511</td></tr></tbody></table></div></details><details><summary>Curiosities crate: every fill option</summary><p class="dim">The crate: 3s lowest, 3s 41c market value, 293 listed.</p><div class="tw"><table><thead><tr><th>One crate takes</th><th class="n">Cost, lowest</th><th class="n">Cost, market value</th><th class="n">Listed</th></tr></thead><tbody><tr><td>4 x Greater Astral Essence</td><td class="n">65s 16c</td><td class="n">65s 52c</td><td class="n">103</td></tr><tr><td>6 x Small Glowing Shard</td><td class="n">71s 88c</td><td class="n">71s 88c</td><td class="n">149</td></tr><tr><td>20 x Soul Dust</td><td class="n">1g</td><td class="n">1g 2s</td><td class="n">383</td></tr><tr><td>2 x Large Glowing Shard</td><td class="n">1g 29s</td><td class="n">1g 31s</td><td class="n">133</td></tr></tbody></table></div></details>
+<p class="note">One crate takes one of its fill options, not all. What each crate accepts comes from
+<a href="https://www.method.gg/wow-forever/how-to-get-waylaid-crates-and-merchants-favor-in-wow-forever">Method's
+guide</a>. Favor per Journeyman crate is 10 in the plan above (from a player's post and one guide); other tiers give more, and your own figure can be typed into the box.
+Buying a large number of crates or herbs also moves the price, so spread herb fills across several
+types. This page rebuilds on every HerbWatch run.</p>
+</main><script>
+(function(){
+  var rows=document.querySelectorAll('tr[data-lo]'), box=document.getElementById('n'), pay=document.getElementById('p'), fav=document.getElementById('f');
+  function pos(c){c=Math.round(c);var g=Math.floor(c/10000),s=Math.floor(c%10000/100),k=c%100;
+    if(g)return s||k?g+'g '+s+'s':g+'g'; if(s)return k?s+'s '+k+'c':s+'s'; return k+'c';}
+  function m(c){return c<0?'-'+pos(-c):pos(c);}
+  function upd(){var n=Math.max(0,parseInt(box.value,10)||0), p=Math.max(0,Math.round((parseFloat(pay.value)||0)*100));
+    rows.forEach(function(r){var lo=+r.dataset.lo-p,hi=+r.dataset.hi-p;
+      var fv=parseFloat(fav.value)||0;
+      r.querySelector('.net').textContent=m(lo);
+      r.querySelector('.fav').textContent=fv>0?m(lo/fv):'-';
+      r.querySelector('.cnt').textContent=m(lo*n)+' to '+m(hi*n);});}
+  if(box&&pay&&fav){box.addEventListener('input',upd);pay.addEventListener('input',upd);fav.addEventListener('input',upd);}
+})();
+</script></body></html>
