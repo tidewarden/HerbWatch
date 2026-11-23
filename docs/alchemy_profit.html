@@ -106,7 +106,8 @@ D.forEach(r=>{r.pc=(r.p!=null&&r.c)?r.p/r.c*100:null;r.txt=(r.n+" "+r.i.join(" "
 let sortK="k",dir=1;
 const $=id=>document.getElementById(id);
 function money(v){if(v==null)return '<span class="na">–</span>';const neg=v<0;v=Math.round(Math.abs(v));const g=Math.floor(v/10000),s=Math.floor(v/100)%100,c=v%100;let o=neg?"−":"";
-  if(g)o+=g+'<span class="g">g</span> ';if(g||s)o+=s+'<span class="s">s</span>';if(!g)o+=(s?" ":"")+c+'<span class="c">c</span>';return o}
+  const ic=k=>'<img class="hw-coin" src="img/money-'+k+'.gif" alt="'+k[0]+'">';
+  if(g)o+=g+ic('gold')+' ';if(g||s)o+=s+ic('silver');if(!g)o+=(s?" ":"")+c+ic('copper');return '<span class="hw-money">'+o+'</span>'}
 function esc(t){return t.replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]))}
 const WH="https://www.wowhead.com/classic/item=",BBB="https://bootybaybroker.com/forever/item/";  // Forever-only items (ids 100000+) are not on Wowhead
 function wh(id,html,cls){cls=cls?` class="${cls}"`:"";return id?`<a${cls} href="${id>=100000?"https://www.wowhead.com/forever/item="+id:WH+id}" target="_blank" rel="noopener">${html}</a><a class="hw-bb" href="${BBB+id}" target="_blank" rel="noopener" title="Price history on BootyBayBroker">BB</a>`:`<span${cls}>${html}</span>`}
